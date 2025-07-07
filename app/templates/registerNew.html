@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加身份 | 人脸识别系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56e4;
+            --secondary: #ff6b6b;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 320px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 0 0 30px 30px;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 25px;
+            border-radius: 50px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo i {
+            font-size: 24px;
+            color: white;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        /* 注册卡片 */
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .register-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+        
+        .register-card h2 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .register-card h2 i {
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-label i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        /* 文件上传区域 */
+        .upload-container {
+            border: 2px dashed #dce1e8;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            background: rgba(248, 249, 250, 0.5);
+            margin-bottom: 25px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .upload-container:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.03);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            font-size: 18px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .upload-hint {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .btn-upload {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-upload:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        /* 图片预览区域 */
+        .preview-container {
+            margin-top: 30px;
+        }
+        
+        .preview-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .preview-title i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .preview-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            aspect-ratio: 1/1;
+        }
+        
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .preview-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 28px;
+            height: 28px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .preview-item:hover .remove-btn {
+            opacity: 1;
+        }
+        
+        /* 提交按钮 */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--success);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(6, 214, 160, 0.3);
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-submit:hover {
+            background: #05c295;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(6, 214, 160, 0.4);
+        }
+        
+        /* 错误消息 */
+        .error-messages {
+            background: #fff0f0;
+            border-left: 4px solid var(--secondary);
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .error-messages ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .error-messages li {
+            color: var(--secondary);
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-messages li i {
+            margin-right: 10px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .register-card {
+                padding: 25px 20px;
+            }
+            
+            .upload-container {
+                padding: 20px;
+            }
+            
+            .preview-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        /* 底部版权信息 */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="animated">
+            <div class="logo">
+                <i class="fas fa-user-circle"></i>
+                <h1>人脸识别系统</h1>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="register-card animated">
+                <h2><i class="fas fa-user-plus"></i> 添加新身份</h2>
+                
+                <!-- 错误消息 -->
+                {% with msgs = get_flashed_messages() %}
+                  {% if msgs %}
+                    <div class="error-messages animated">
+                      <ul>
+                      {% for m in msgs %}
+                        <li><i class="fas fa-exclamation-circle"></i> {{ m }}</li>
+                      {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+                {% endwith %}
+                
+                <form action="{{ url_for('main.register') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i> 姓名
+                        </label>
+                        <input type="text" name="name" class="form-input" placeholder="请输入姓名" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-images"></i> 上传照片
+                        </label>
+                        
+                        <div class="upload-container" id="uploadTrigger">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">选择照片或拖放到此处</div>
+                            <div class="upload-hint">支持 JPG, PNG 格式（可多选）</div>
+                            <button type="button" class="btn-upload">
+                                <i class="fas fa-folder-open"></i> 选择照片
+                            </button>
+                            <input type="file" id="imgInput" name="images" class="file-input" accept="image/*" multiple required>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-container">
+                        <div class="preview-title">
+                            <i class="fas fa-eye"></i> 照片预览
+                        </div>
+                        <div class="preview-grid" id="preview">
+                            <!-- 预览图片将动态添加到这里 -->
+                        </div>
+                        <div id="file-count">已选择 <span>0</span> 张照片</div>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-user-check"></i> 上传并注册
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <footer>
+            <p>人脸识别系统 &copy; 2023 | 安全 · 高效 · 智能</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imgInput = document.getElementById('imgInput');
+            const uploadTrigger = document.getElementById('uploadTrigger');
+            const previewContainer = document.getElementById('preview');
+            const fileCount = document.getElementById('file-count').querySelector('span');
+            
+            // 点击上传区域触发文件选择
+            uploadTrigger.addEventListener('click', function(e) {
+                if (e.target !== imgInput) {
+                    imgInput.click();
+                }
+            });
+            
+            // 文件选择变化事件
+            imgInput.addEventListener('change', function() {
+                previewContainer.innerHTML = '';
+                const files = this.files;
+                fileCount.textContent = files.length;
+                
+                if (files.length === 0) {
+                    return;
+                }
+                
+                for (const file of files) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" alt="预览">
+                            <div class="remove-btn">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        `;
+                        
+                        // 添加移除按钮功能
+                        const removeBtn = previewItem.querySelector('.remove-btn');
+                        removeBtn.addEventListener('click', function() {
+                            previewItem.remove();
+                            updateFileInput(previewContainer);
+                            fileCount.textContent = previewContainer.children.length;
+                        });
+                        
+                        previewContainer.appendChild(previewItem);
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // 更新文件输入
+            function updateFileInput(container) {
+                // 创建一个新的 DataTransfer 对象
+                const dataTransfer = new DataTransfer();
+                
+                // 获取所有预览项对应的文件
+                const previewItems = container.querySelectorAll('.preview-item');
+                const files = Array.from(imgInput.files);
+                
+                // 过滤掉已移除的文件
+                const remainingFiles = files.filter((file, index) => {
+                    return index < previewItems.length;
+                });
+                
+                // 将剩余文件添加到 DataTransfer 对象
+                remainingFiles.forEach(file => {
+                    dataTransfer.items.add(file);
+                });
+                
+                // 更新文件输入
+                imgInput.files = dataTransfer.files;
+                fileCount.textContent = previewContainer.children.length;
+            }
+            
+            // 拖放功能
+            uploadTrigger.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#4361ee';
+                this.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
+            });
+            
+            uploadTrigger.addEventListener('dragleave', function() {
+                this.style.borderColor = '#dce1e8';
+                this.style.backgroundColor = 'rgba(248, 249, 250, 0.5)';
+            });
+            
+            uploadTrigger.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#dce1e8';
+                this.style.backgroundColor = 'rgba(248, 249, 250, 0.5)';
+                
+                if (e.dataTransfer.files.length) {
+                    imgInput.files = e.dataTransfer.files;
+                    const event = new Event('change', { bubbles: true });
+                    imgInput.dispatchEvent(event);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

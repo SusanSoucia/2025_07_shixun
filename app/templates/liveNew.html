@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时人脸识别 | 人脸识别系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56e4;
+            --secondary: #ff6b6b;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 320px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 0 0 30px 30px;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 25px;
+            border-radius: 50px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo i {
+            font-size: 24px;
+            color: white;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        /* 识别卡片 */
+        .recognition-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            padding: 30px;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .recognition-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+        
+        .recognition-card h2 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            margin-bottom: 25px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .recognition-card h2 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        /* 视频流区域 */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        #liveFeed {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+        
+        /* 状态指示器 */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        
+        .status-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--secondary);
+        }
+        
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+        
+        /* 控制按钮 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--dark);
+            border: 1px solid #dee2e6;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .recognition-card {
+                padding: 20px 15px;
+            }
+            
+            .video-container {
+                max-width: 100%;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 底部版权信息 */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="animated">
+            <div class="logo">
+                <i class="fas fa-user-circle"></i>
+                <h1>人脸识别系统</h1>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="recognition-card animated">
+                <h2><i class="fas fa-video"></i> 实时人脸识别</h2>
+                
+                <div class="status-indicator">
+                    <div class="status-dot active"></div>
+                    <span id="status-text">摄像头已启用 - 实时识别中</span>
+                </div>
+                
+                <div class="video-container">
+                    <img id="liveFeed" src="{{ url_for('main.video_feed') }}" alt="实时视频流">
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" id="captureBtn">
+                    <i class="fas fa-camera"></i> 捕获图像
+                </button>
+                <a class="btn btn-secondary" href="{{ url_for('main.index') }}">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>人脸识别系统 &copy; 2023 | 安全 · 高效 · 智能</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 摄像头状态管理
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.getElementById('status-text');
+            let isCameraActive = true;
+            
+            // 在用户离开页面时停止摄像头
+            window.addEventListener("beforeunload", () => {
+                if (isCameraActive) {
+                    navigator.sendBeacon("{{ url_for('main.stop_cam') }}");
+                }
+            });
+            
+            // 捕获图像按钮
+            const captureBtn = document.getElementById('captureBtn');
+            captureBtn.addEventListener('click', function() {
+                // 添加动画效果
+                this.classList.add('pulse');
+                setTimeout(() => {
+                    this.classList.remove('pulse');
+                }, 500);
+                
+                // 创建canvas捕获当前帧
+                const video = document.getElementById('liveFeed');
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth || video.width;
+                canvas.height = video.videoHeight || video.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // 将图像转换为DataURL
+                const imageData = canvas.toDataURL('image/jpeg');
+                
+                // 在实际应用中，这里可以将图像发送到服务器
+                alert('图像已捕获！在实际应用中，这里可以将图像发送到服务器进行处理。');
+            });
+        });
+    </script>
+</body>
+</html>

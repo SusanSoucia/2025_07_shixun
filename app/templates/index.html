@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>人脸识别系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .button-group a {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-group a:hover {
+            background-color: #0056b3;
+        }
+
+        .upload-section {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin-top: 15px;
+        }
+
+        img#preview {
+            margin-top: 20px;
+            max-width: 300px;
+            border: 2px solid #ccc;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>人脸识别系统主界面</h1>
+
+    <div class="button-group">
+        <a href="/identify">图片识别</a>
+        <a href="/register">添加身份</a>
+        <a href="/live">实时识别</a>
+    </div>
+
+    <div class="upload-section">
+        <h3>图片预览（仅本地预览，不上传）</h3>
+        <input type="file" id="imageInput" accept="image/*">
+        <br>
+        <img id="preview" src="#" alt="预览图像">
+    </div>
+
+    <script>
+        const input = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "#";
+                preview.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>

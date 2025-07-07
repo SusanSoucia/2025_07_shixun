@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}图片识别{% endblock %}
+
+{% block content %}
+<h2>上传图片进行识别</h2>
+
+<!-- 显示 Flash 消息 -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul style="color:red;">
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form action="{{ url_for('main.identify') }}" method="post" enctype="multipart/form-data">
+  <label>选择图片：</label>
+  <input type="file" id="imgInput" name="image" accept="image/*" required>
+  <br><br>
+  <img id="preview" style="display:none; max-width:300px; border:1px solid #ccc;">
+  <br><br>
+  <button type="submit">开始识别</button>
+</form>
+
+<script>
+document.getElementById('imgInput').addEventListener('change', function (evt) {
+    const img = document.getElementById('preview');
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            img.src = e.target.result;
+            img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        img.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

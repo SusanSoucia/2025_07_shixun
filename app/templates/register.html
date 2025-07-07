@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}添加身份{% endblock %}
+
+{% block content %}
+<h2>添加新身份（多张图片）</h2>
+
+{% with msgs = get_flashed_messages() %}
+  {% if msgs %}
+    <ul style="color:red;">
+    {% for m in msgs %}
+      <li>{{ m }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<form action="{{ url_for('main.register') }}" method="post" enctype="multipart/form-data">
+  <label>姓名：</label>
+  <input type="text" name="name" required><br><br>
+
+  <label>选择照片（可多选）：</label>
+  <input type="file" id="imgInput" name="images" accept="image/*" multiple required><br><br>
+
+  <div id="preview" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;"></div>
+
+  <button type="submit">上传并注册</button>
+</form>
+
+<script>
+document.getElementById('imgInput').addEventListener('change', function () {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = '';  // 清空旧图
+
+    for (const file of this.files) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.maxWidth = '150px';
+        img.style.border = '1px solid #ccc';
+        preview.appendChild(img);
+    }
+});
+</script>
+{% endblock %}

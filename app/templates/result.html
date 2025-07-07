@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}识别结果{% endblock %}
+
+{% block content %}
+<h2>识别结果</h2>
+
+{% if name %}
+  <p><strong>身份:</strong> {{ name }}</p>
+  <p><strong>相似度:</strong> {{ '%.2f' % (score * 100) }}%</p>
+{% else %}
+  <p style="color:red;"><strong>未能识别出该人脸。</strong></p>
+{% endif %}
+
+{% if img_b64 %}
+  <p><strong>上传的图片:</strong></p>
+  <img src="data:image/jpeg;base64,{{ img_b64 }}" style="max-width: 300px; border: 1px solid #ccc;">
+{% endif %}
+
+<br><br>
+<a href="{{ url_for('main.index') }}">返回首页</a>
+{% endblock %}
