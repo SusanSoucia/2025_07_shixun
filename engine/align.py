@@ -61,7 +61,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import os
     
-    img_path = 'E:/localDL/shuangren2.png'
+    img_path = 'E:/localDL/Edison3.png'
     bgr = cv2.imread(img_path)
     
     # 创建对齐器
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     axs[0].axis("off")
     
     # 显示所有对齐后的人脸
-    for i, aligned_face in enumerate(aligned_faces):
+    for i, (aligned_face,_) in enumerate(aligned_faces):
         # 转换为RGB格式用于显示
         rgb_aligned = cv2.cvtColor((aligned_face*255).astype(np.uint8), cv2.COLOR_BGR2RGB)
         

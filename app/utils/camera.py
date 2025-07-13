@@ -24,7 +24,6 @@ class Camera:
         self._last_results = None
         self.lock = threading.Lock()
 
-        # ★ 一定要加 () 执行
         threading.Thread(target=self._reader, daemon=True).start()
         threading.Thread(target=self._inference,daemon=True).start()
 

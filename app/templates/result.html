@@ -1,21 +1,100 @@
 {% extends "base.html" %}
-{% block title %}识别结果{% endblock %}
+{% block title %}识别结果 | 人脸识别系统{% endblock %}
 
 {% block content %}
-<h2>识别结果</h2>
+<div class="result-card animated fadeInUp">
+    <h2><i class="fas fa-id-card-alt"></i> 识别结果</h2>
 
-{% if name %}
-  <p><strong>身份:</strong> {{ name }}</p>
-  <p><strong>相似度:</strong> {{ '%.2f' % (score * 100) }}%</p>
-{% else %}
-  <p style="color:red;"><strong>未能识别出该人脸。</strong></p>
-{% endif %}
+    {% if name %}
+    <div class="result-info">
+        <p><strong>身份：</strong><span class="identity-name">{{ name }}</span></p>
+        <p><strong>相似度：</strong><span class="similarity">{{ '%.2f' % (score * 100) }}%</span></p>
+    </div>
+    {% else %}
+    <div class="result-failure">
+        <i class="fas fa-times-circle"></i>
+        <p><strong>未能识别出该人脸。</strong></p>
+    </div>
+    {% endif %}
 
-{% if img_b64 %}
-  <p><strong>上传的图片:</strong></p>
-  <img src="data:image/jpeg;base64,{{ img_b64 }}" style="max-width: 300px; border: 1px solid #ccc;">
-{% endif %}
+    {% if img_b64 %}
+    <div class="image-preview">
+        <p><strong>上传的图片：</strong></p>
+        <img src="data:image/jpeg;base64,{{ img_b64 }}" alt="上传图片预览">
+    </div>
+    {% endif %}
 
-<br><br>
-<a href="{{ url_for('main.index') }}">返回首页</a>
+    <a href="{{ url_for('main.index') }}" class="btn-back">
+        <i class="fas fa-arrow-left"></i> 返回首页
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.result-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 40px auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.result-info {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+.identity-name {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.similarity {
+    color: var(--success);
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.result-failure {
+    color: red;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.result-failure i {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.image-preview {
+    margin-top: 25px;
+}
+
+.image-preview img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 30px;
+    background: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.btn-back:hover {
+    background: var(--primary-dark);
+}
+</style>
 {% endblock %}

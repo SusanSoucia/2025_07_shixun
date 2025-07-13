@@ -19,7 +19,7 @@ warm_up()
 
 
 # --------------------工具-------------------------#
-ALLOWED_EXT = {"jpg","jpeg","png"}
+ALLOWED_EXT = {"jpg","jpeg","png","webp"}
 
 def allowed_file(filename: str)->bool:
     return "." in filename and filename.rsplit(".",1)[1].lower() in ALLOWED_EXT

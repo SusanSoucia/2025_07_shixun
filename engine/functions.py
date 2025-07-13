@@ -121,7 +121,7 @@ class FaceRecognizer:
         """
         批量识别多张图像中的人脸，返回识别结果列表
         :param imgs: 输入图像路径列表或图像数组列表
-        :return: 结果列表，每个元素为 (name, similarity) 或 None
+        :return: 结果列表，每个元素为 (bbox,name, similarity) 或 None
         """
         results = []
         faces_info = self.align_multi_faces(img)
